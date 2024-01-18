@@ -6,6 +6,9 @@ package daw;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -68,14 +71,88 @@ public class Funciones {
 
     }
 
+    //Metodo admin
     public static void anadirProducto(List<Producto> carta, String nombre, Categoria c, Subcategoria s) {
 
         Producto p1 = new Producto(nombre, c, s);
 
         if (p1.getCategoria() == null || p1.getSubcategoria() == null) {
-            System.out.println("No se ha podido añadir el producto porque no era válido");
+            JOptionPane.showMessageDialog(null, "El producto es erróneo");
         } else {
             carta.add(p1);
+        }
+
+    }
+
+    private static String generarContrasena() {
+        String caracteresMayuscula = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String caracteresMinuscula = "abcdefghijklmnopqrstuvwxyz";
+        String caracteresNumeros = "0123456789";
+        String caracteresEspeciales = "!@#$^&()_=+-*/%<>?[]{}";
+
+        Random random = new Random();
+        StringBuilder contrasena = new StringBuilder();
+
+        // Añadir al menos uno de cada
+        int indiceMinuscula = random.nextInt(caracteresMinuscula.length());
+        contrasena.append(caracteresMinuscula.charAt(indiceMinuscula));
+        int indiceMayuscula = random.nextInt(caracteresMinuscula.length());
+        contrasena.append(caracteresMayuscula.charAt(indiceMayuscula));
+        int indiceNumeros = random.nextInt(caracteresNumeros.length());
+        contrasena.append(caracteresNumeros.charAt(indiceNumeros));
+        int indiceEspeciales = random.nextInt(caracteresEspeciales.length());
+        contrasena.append(caracteresEspeciales.charAt(indiceEspeciales));
+
+        // Añadir el resto de la contraseña
+        for (int i = 1; i < 3; i++) {
+            String caracteres = caracteresMayuscula + caracteresMinuscula + caracteresNumeros;
+            int indice = random.nextInt(caracteres.length());
+            char caracter = caracteres.charAt(indice);
+            contrasena.append(caracter);
+        }
+
+        return contrasena.toString();
+    }
+
+    private static boolean verificarContrasena(String contrasenya) {
+        Scanner scanner = new Scanner(System.in);
+        boolean valida = true;
+
+        do {
+            String entradaUsuario = JOptionPane.showInputDialog("Introduce la contraseña: ");
+
+            if (entradaUsuario.equals(contrasenya)) {
+                JOptionPane.showMessageDialog(null,"Contraseña correcta");
+                valida = true;
+            } else {
+                JOptionPane.showMessageDialog(null,"Contraseña incorrecta");
+                valida = false;
+            }
+        } while (!valida);
+
+        return valida;
+    }
+
+    public static void llevarNavegacion() {
+
+        int numDiapositivas = 0;
+        String[] opciones = {"Admin", "Usuario"};
+
+        switch (numDiapositivas) {
+            //Menu eleccion admin
+            case 0:
+
+                break;
+            case 1:
+
+                break;
+            case 2:
+
+                break;
+            case 3:
+
+                break;
+
         }
 
     }
@@ -84,11 +161,38 @@ public class Funciones {
 
         List<Producto> carta = crearCarta();
 
-        Funciones.mostrarLista(carta);
-        anadirProducto(carta, "Pinchitos de cerdo", Categoria.COMIDA, Subcategoria.CARNE);
-        System.out.println("----------------------------------------");
-        Funciones.mostrarLista(carta);
+        //Funciones.mostrarLista(carta);
+        //anadirProducto(carta, "Pinchitos de cerdo", Categoria.COMIDA, Subcategoria.CARNE);
+        //System.out.println("----------------------------------------");
+        //Funciones.mostrarLista(carta);
+        menuInicial();
 
+    }
+
+    public static void menuInicial() {
+
+        String[] seleccion = {"Usuario", "Administrador"};
+
+        int opcion = JOptionPane.showOptionDialog(null, "Elige una opcion", "Eleccion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, seleccion, seleccion[0]);
+
+        switch (opcion) {
+            case 0:
+                System.out.println("Eres usuario");
+                break;
+            case 1:
+                String contrasena = generarContrasena();
+                System.out.println(contrasena);
+                verificarContrasena(contrasena);
+                    
+                
+
+                break;
+
+        }
+    }
+    
+    public static void menuAdministrador(String[] args) {
+        
     }
 
 }
