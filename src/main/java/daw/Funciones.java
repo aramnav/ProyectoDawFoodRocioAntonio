@@ -168,7 +168,7 @@ public class Funciones {
         menuInicial();
 
     }
-
+//menu inicial
     public static void menuInicial() {
 
         String[] seleccion = {"Usuario", "Administrador"};
