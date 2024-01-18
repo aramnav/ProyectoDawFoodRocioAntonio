@@ -6,6 +6,7 @@ package daw;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -91,4 +92,35 @@ public class Funciones {
 
     }
 
+    
+   private static String generarContraseña() {
+        String caracteresMayuscula = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String caracteresMinuscula = "abcdefghijklmnopqrstuvwxyz";
+        String caracteresNumeros = "0123456789";
+        String caracteresEspeciales ="!@#$^&()_=+-*/%<>?[]{}";
+
+        Random random = new Random();
+        StringBuilder contraseña = new StringBuilder();
+
+        // Añadir al menos uno de cada
+        int indiceMinuscula = random.nextInt(caracteresMinuscula.length());
+        contraseña.append(caracteresMinuscula.charAt(indiceMinuscula));
+        int indiceMayuscula = random.nextInt(caracteresMinuscula.length());
+        contraseña.append(caracteresMayuscula.charAt(indiceMayuscula));
+        int indiceNumeros = random.nextInt(caracteresNumeros.length());
+        contraseña.append(caracteresNumeros.charAt(indiceNumeros));
+        int indiceEspeciales = random.nextInt(caracteresEspeciales.length());
+        contraseña.append(caracteresEspeciales.charAt(indiceEspeciales));
+
+        // Añadir el resto de la contraseña
+        for (int i = 1; i < 3; i++) {
+            String caracteres = caracteresMayuscula + caracteresMinuscula + caracteresNumeros;
+            int indice = random.nextInt(caracteres.length());
+            char caracter = caracteres.charAt(indice);
+            contraseña.append(caracter);
+        }
+
+        return contraseña.toString();
+    }
+    
 }
