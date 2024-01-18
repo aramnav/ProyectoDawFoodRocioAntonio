@@ -4,18 +4,50 @@
  */
 package daw;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.UUID;
+
 /**
  *
  * @author antonio
  */
 public class Tpv {
-    
-    
-    int numSerie;
-    
-    
-    
-     public void encenderTpv(){
-         
-     }
+
+    private UUID numSerie;
+    private String direccion;
+    private LocalDate fecha;
+    private LocalTime hora;
+
+    public Tpv(String direccion) {
+        this.numSerie = UUID.randomUUID();
+        this.direccion = direccion;
+        this.fecha = LocalDate.now();
+        this.hora = LocalTime.now();
+    }
+
+    public void encenderTpv() {
+        //contenido del programa
+    }
+
+    public UUID getNumSerie() {
+        return numSerie;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public LocalDate verFecha() {
+        return fecha;
+    }
+
+    public LocalTime verHora() {
+        return hora;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
 }

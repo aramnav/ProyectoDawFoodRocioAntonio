@@ -70,7 +70,13 @@ public class Funciones {
 
     public static void anadirProducto(List<Producto> carta, String nombre, Categoria c, Subcategoria s) {
 
-        carta.add(new Producto(nombre, c, s));
+        Producto p1 = new Producto(nombre, c, s);
+
+        if (p1.getCategoria() == null || p1.getSubcategoria() == null) {
+            System.out.println("No se ha podido añadir el producto porque no era válido");
+        } else {
+            carta.add(p1);
+        }
 
     }
 
