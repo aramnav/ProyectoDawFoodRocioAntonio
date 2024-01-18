@@ -85,10 +85,12 @@ public class Funciones {
 
         List<Producto> carta = crearCarta();
 
-        Funciones.mostrarLista(carta);
-        anadirProducto(carta, "Pinchitos de cerdo", Categoria.COMIDA, Subcategoria.CARNE);
-        System.out.println("----------------------------------------");
-        Funciones.mostrarLista(carta);
+        //Funciones.mostrarLista(carta);
+        //anadirProducto(carta, "Pinchitos de cerdo", Categoria.COMIDA, Subcategoria.CARNE);
+       // System.out.println("----------------------------------------");
+        //Funciones.mostrarLista(carta);
+
+        menuInicial();
 
     }
 
@@ -122,5 +124,34 @@ public class Funciones {
 
         return contraseña.toString();
     }
+
+    public static void menuInicial() {
+
+        String[] seleccion = {"Usuario", "Administrador"};
+
+        int opcion = JOptionPane.showOptionDialog(null, "Elige una opcion", "Eleccion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, seleccion, seleccion[0]);
+
+        switch (opcion) {
+            case 0:
+                System.out.println("Eres usuario");
+                break;
+            case 1:
+                String contrasena = generarContrasena();
+                System.out.println(contrasena);
+                verificarContrasena(contrasena);
+                    
+                
+
+                break;
+
+        }
+    }
+    
+    public static void menuAdministrador(String[] args) {
+        
+    }
+
+
+
     
 }
