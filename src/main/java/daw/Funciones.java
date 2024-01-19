@@ -71,88 +71,14 @@ public class Funciones {
 
     }
 
-    //Metodo admin
     public static void anadirProducto(List<Producto> carta, String nombre, Categoria c, Subcategoria s) {
 
         Producto p1 = new Producto(nombre, c, s);
 
         if (p1.getCategoria() == null || p1.getSubcategoria() == null) {
-            JOptionPane.showMessageDialog(null, "El producto es erróneo");
+            System.out.println("No se ha podido añadir el producto porque no era válido");
         } else {
             carta.add(p1);
-        }
-
-    }
-
-    private static String generarContrasena() {
-        String caracteresMayuscula = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String caracteresMinuscula = "abcdefghijklmnopqrstuvwxyz";
-        String caracteresNumeros = "0123456789";
-        String caracteresEspeciales = "!@#$^&()_=+-*/%<>?[]{}";
-
-        Random random = new Random();
-        StringBuilder contrasena = new StringBuilder();
-
-        // Añadir al menos uno de cada
-        int indiceMinuscula = random.nextInt(caracteresMinuscula.length());
-        contrasena.append(caracteresMinuscula.charAt(indiceMinuscula));
-        int indiceMayuscula = random.nextInt(caracteresMinuscula.length());
-        contrasena.append(caracteresMayuscula.charAt(indiceMayuscula));
-        int indiceNumeros = random.nextInt(caracteresNumeros.length());
-        contrasena.append(caracteresNumeros.charAt(indiceNumeros));
-        int indiceEspeciales = random.nextInt(caracteresEspeciales.length());
-        contrasena.append(caracteresEspeciales.charAt(indiceEspeciales));
-
-        // Añadir el resto de la contraseña
-        for (int i = 1; i < 3; i++) {
-            String caracteres = caracteresMayuscula + caracteresMinuscula + caracteresNumeros;
-            int indice = random.nextInt(caracteres.length());
-            char caracter = caracteres.charAt(indice);
-            contrasena.append(caracter);
-        }
-
-        return contrasena.toString();
-    }
-
-    private static boolean verificarContrasena(String contrasenya) {
-        Scanner scanner = new Scanner(System.in);
-        boolean valida = true;
-
-        do {
-            String entradaUsuario = JOptionPane.showInputDialog("Introduce la contraseña: ");
-
-            if (entradaUsuario.equals(contrasenya)) {
-                JOptionPane.showMessageDialog(null,"Contraseña correcta");
-                valida = true;
-            } else {
-                JOptionPane.showMessageDialog(null,"Contraseña incorrecta");
-                valida = false;
-            }
-        } while (!valida);
-
-        return valida;
-    }
-
-    public static void llevarNavegacion() {
-
-        int numDiapositivas = 0;
-        String[] opciones = {"Admin", "Usuario"};
-
-        switch (numDiapositivas) {
-            //Menu eleccion admin
-            case 0:
-
-                break;
-            case 1:
-
-                break;
-            case 2:
-
-                break;
-            case 3:
-
-                break;
-
         }
 
     }
@@ -163,12 +89,44 @@ public class Funciones {
 
         //Funciones.mostrarLista(carta);
         //anadirProducto(carta, "Pinchitos de cerdo", Categoria.COMIDA, Subcategoria.CARNE);
-        //System.out.println("----------------------------------------");
+       // System.out.println("----------------------------------------");
         //Funciones.mostrarLista(carta);
+
         menuInicial();
 
     }
-//menu inicial
+
+    
+   private static String generarContrasena() {
+        String caracteresMayuscula = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String caracteresMinuscula = "abcdefghijklmnopqrstuvwxyz";
+        String caracteresNumeros = "0123456789";
+        String caracteresEspeciales ="!@#$^&()_=+-*/%<>?[]{}";
+
+        Random random = new Random();
+        StringBuilder contraseña = new StringBuilder();
+
+        // Añadir al menos uno de cada
+        int indiceMinuscula = random.nextInt(caracteresMinuscula.length());
+        contraseña.append(caracteresMinuscula.charAt(indiceMinuscula));
+        int indiceMayuscula = random.nextInt(caracteresMinuscula.length());
+        contraseña.append(caracteresMayuscula.charAt(indiceMayuscula));
+        int indiceNumeros = random.nextInt(caracteresNumeros.length());
+        contraseña.append(caracteresNumeros.charAt(indiceNumeros));
+        int indiceEspeciales = random.nextInt(caracteresEspeciales.length());
+        contraseña.append(caracteresEspeciales.charAt(indiceEspeciales));
+
+        // Añadir el resto de la contraseña
+        for (int i = 1; i < 3; i++) {
+            String caracteres = caracteresMayuscula + caracteresMinuscula + caracteresNumeros;
+            int indice = random.nextInt(caracteres.length());
+            char caracter = caracteres.charAt(indice);
+            contraseña.append(caracter);
+        }
+
+        return contraseña.toString();
+    }
+
     public static void menuInicial() {
 
         String[] seleccion = {"Usuario", "Administrador"};
@@ -194,5 +152,31 @@ public class Funciones {
     public static void menuAdministrador(String[] args) {
         
     }
+    
 
+    private static boolean verificarContrasena(String contrasenya) {
+        Scanner scanner = new Scanner(System.in);
+        boolean valida = true;
+
+        do {
+            String entradaUsuario = JOptionPane.showInputDialog("Introduce la contraseña: ");
+
+            if (entradaUsuario.equals(contrasenya)) {
+                JOptionPane.showMessageDialog(null,"Contraseña correcta");
+                valida = true;
+            } else {
+                JOptionPane.showMessageDialog(null,"Contraseña incorrecta");
+                valida = false;
+            }
+        } while (!valida);
+
+        return valida;
+    }
+
+    
+
+
+
+
+    
 }
