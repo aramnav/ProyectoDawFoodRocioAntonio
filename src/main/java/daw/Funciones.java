@@ -87,21 +87,19 @@ public class Funciones {
 
         List<Producto> carta = crearCarta();
 
-        //Funciones.mostrarLista(carta);
-        //anadirProducto(carta, "Pinchitos de cerdo", Categoria.COMIDA, Subcategoria.CARNE);
-       // System.out.println("----------------------------------------");
-        //Funciones.mostrarLista(carta);
-
-        menuInicial();
+        Funciones.mostrarLista(carta);
+        anadirProducto(carta, "Pinchitos de cerdo", Categoria.COMIDA, Subcategoria.CARNE);
+        System.out.println("----------------------------------------");
+        Funciones.mostrarLista(carta);
+        //menuInicial();
 
     }
 
-    
-   private static String generarContrasena() {
+    private static String generarContrasena() {
         String caracteresMayuscula = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String caracteresMinuscula = "abcdefghijklmnopqrstuvwxyz";
         String caracteresNumeros = "0123456789";
-        String caracteresEspeciales ="!@#$^&()_=+-*/%<>?[]{}";
+        String caracteresEspeciales = "!@#$^&()_=+-*/%<>?[]{}";
 
         Random random = new Random();
         StringBuilder contraseña = new StringBuilder();
@@ -141,42 +139,79 @@ public class Funciones {
                 String contrasena = generarContrasena();
                 System.out.println(contrasena);
                 verificarContrasena(contrasena);
-                    
-                
 
                 break;
 
         }
     }
-    
-    public static void menuAdministrador(String[] args) {
-        
-    }
-    
 
     private static boolean verificarContrasena(String contrasenya) {
-        Scanner scanner = new Scanner(System.in);
         boolean valida = true;
 
         do {
             String entradaUsuario = JOptionPane.showInputDialog("Introduce la contraseña: ");
 
             if (entradaUsuario.equals(contrasenya)) {
-                JOptionPane.showMessageDialog(null,"Contraseña correcta");
+                JOptionPane.showMessageDialog(null, "Contraseña correcta");
                 valida = true;
             } else {
-                JOptionPane.showMessageDialog(null,"Contraseña incorrecta");
+                JOptionPane.showMessageDialog(null, "Contraseña incorrecta");
                 valida = false;
+
             }
+
         } while (!valida);
 
         return valida;
+
     }
 
-    
+    public static void menuAdministrador() {
+        int Admin = Integer.parseInt(JOptionPane.showInputDialog(null,
+                "Admin\n\n 1.Cambiar datos\n 2.Dar de alta productos nuevos\n 3.Borrar "
+                + "productos\n 4.Consultar ventas\n 5.Consultar direccion o fecha\n 6.Salir"));
+        switch (Admin) {
+            case 1:
+                JOptionPane.showMessageDialog(null, "Cambiar datos de los productos");
+                break;
+            case 2:
+                JOptionPane.showMessageDialog(null, "Dar de alta productos nuevos");
+                break;
+            case 3:
+                JOptionPane.showMessageDialog(null, "Borrar productos");
+                break;
+            case 4:
+                JOptionPane.showMessageDialog(null, "Consultar ventas");
+                break;
+            case 5:
+                JOptionPane.showMessageDialog(null, "Consultar direccion o fecha");
+                break;
+            default:
+                JOptionPane.showInputDialog(null, "Opcion Incorrecta");
+        }
 
+    }
 
+    public static void subMenuConsultarVentas() {
 
+        int ConsultaVentas = Integer.parseInt(JOptionPane.showInputDialog(null,
+                "Consultar ventas\n\n 1.En día concreto\n 2.Hasta una fecha\n 3.Ver todas las ventas\n 4.Salir"));
+        switch (Admin) {
+            case 1:
+                JOptionPane.showMessageDialog(null, "Día concreto");
+                break;
+            case 2:
+                JOptionPane.showMessageDialog(null, "Hasta una fecha");
+                break;
+            case 3:
+                JOptionPane.showMessageDialog(null, "Ver todas las ventas");
+                break;
+            case 4:
+                JOptionPane.showMessageDialog(null, "Salir");
+                break;
+            default:
+                JOptionPane.showInputDialog(null, "Opcion Incorrecta");
+        }
+    }
 
-    
 }
