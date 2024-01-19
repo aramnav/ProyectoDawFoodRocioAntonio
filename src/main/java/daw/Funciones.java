@@ -7,7 +7,6 @@ package daw;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 /**
@@ -83,16 +82,26 @@ public class Funciones {
 
     }
 
+    public static void borrarProducto(List<Producto> carta, String nombre) {
+
+        for (int i = 0; i < carta.size(); i++) {
+            if (nombre.equals(nombre)) {
+                carta.remove(i);
+            }
+        }
+    }
+
     public static void main(String[] messi) {
 
         List<Producto> carta = crearCarta();
 
         Funciones.mostrarLista(carta);
-        anadirProducto(carta, "Pinchitos de cerdo", Categoria.COMIDA, Subcategoria.CARNE);
-        System.out.println("----------------------------------------");
-        Funciones.mostrarLista(carta);
-        //menuInicial();
+//        anadirProducto(carta, "Pinchitos de cerdo", Categoria.COMIDA, Subcategoria.CARNE);
+//        System.out.println("----------------------------------------");
+//        Funciones.mostrarLista(carta);
+//        menuInicial(carta);
 
+        borrarProducto(carta, "Solomillo de cerdo");
     }
 
     private static String generarContrasena() {
@@ -125,22 +134,21 @@ public class Funciones {
         return contraseña.toString();
     }
 
-    public static void menuInicial() {
+    public static void menuInicial(List<Producto> carta) {
 
         String[] seleccion = {"Usuario", "Administrador"};
 
         int opcion = JOptionPane.showOptionDialog(null, "Elige una opcion", "Eleccion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, seleccion, seleccion[0]);
 
         switch (opcion) {
-            case 0:
+            case 0 ->
                 System.out.println("Eres usuario");
-                break;
-            case 1:
+            case 1 -> {
                 String contrasena = generarContrasena();
                 System.out.println(contrasena);
                 verificarContrasena(contrasena);
-
-                break;
+                menuAdministrador(carta);
+            }
 
         }
     }
@@ -166,28 +174,40 @@ public class Funciones {
 
     }
 
-    public static void menuAdministrador() {
-        int Admin = Integer.parseInt(JOptionPane.showInputDialog(null,
-                "Admin\n\n 1.Cambiar datos\n 2.Dar de alta productos nuevos\n 3.Borrar "
-                + "productos\n 4.Consultar ventas\n 5.Consultar direccion o fecha\n 6.Salir"));
-        switch (Admin) {
+    public static void menuAdministrador(List<Producto> carta) {
+        int admin = 0;
+        do {
+            
+        
+         admin = Integer.parseInt(JOptionPane.showInputDialog(null, """                                                                       
+                                                                        1.Cambiar datos
+                                                                        2.Dar de alta productos nuevos
+                                                                        3.Borrar productos
+                                                                        4.Consultar ventas
+                                                                        5.Consultar direccion o fecha
+                                                                        6.Salir
+                                                                       """));
+        } while (admin > 6 || admin < 1);
+        
+        switch (admin) {
             case 1:
                 JOptionPane.showMessageDialog(null, "Cambiar datos de los productos");
                 break;
             case 2:
-                JOptionPane.showMessageDialog(null, "Dar de alta productos nuevos");
+                String nombre = JOptionPane.showInputDialog(null, "Introduce el nombre del producto");
+                anadirProducto(carta, nombre, Categoria.COMIDA, Subcategoria.ZUMO);
                 break;
             case 3:
-                JOptionPane.showMessageDialog(null, "Borrar productos");
+                String nombreProducto = JOptionPane.showInputDialog(null, "Introduce el id del producto a borrar");
+                borrarProducto(carta, nombreProducto);
                 break;
             case 4:
-                JOptionPane.showMessageDialog(null, "Consultar ventas");
+                subMenuConsultarVentas();
                 break;
             case 5:
                 JOptionPane.showMessageDialog(null, "Consultar direccion o fecha");
+
                 break;
-            default:
-                JOptionPane.showInputDialog(null, "Opcion Incorrecta");
         }
 
     }
@@ -196,7 +216,7 @@ public class Funciones {
 
         int ConsultaVentas = Integer.parseInt(JOptionPane.showInputDialog(null,
                 "Consultar ventas\n\n 1.En día concreto\n 2.Hasta una fecha\n 3.Ver todas las ventas\n 4.Salir"));
-        switch (Admin) {
+        switch (ConsultaVentas) {
             case 1:
                 JOptionPane.showMessageDialog(null, "Día concreto");
                 break;
