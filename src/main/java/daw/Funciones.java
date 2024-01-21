@@ -4,7 +4,9 @@
  */
 package daw;
 
+import static daw.Categoria.POSTRE;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import javax.swing.JOptionPane;
@@ -62,12 +64,57 @@ public class Funciones {
         return lista;
     }
 
-    public static void mostrarLista(List<Producto> lista) {
+    public static List<String> mostrarLista(List<Producto> carta) {
+        List<String> cartaConFormato = new ArrayList<>();
 
-        for (Producto p : lista) {
-            System.out.println(p);
+        for (Producto producto : carta) {
+
+            String formato = """
+                             %s Id:%d %s %s Precio:%.2f€ Iva:%.2f Stock:%d
+                             """.formatted(producto.getDescripcion(),
+                    producto.getIdProducto(), producto.getCategoria(),
+                    producto.getSubcategoria(), producto.getPrecio(),
+                    producto.getIva().getTasa(), producto.getStock());
+
+            formato = formato.replace(",", ".");
+
+            cartaConFormato.add(formato);
         }
 
+        return cartaConFormato;
+    }
+
+    private static Producto mostrarMenuDesplegable(List<Producto> carta) {
+        String[] opciones = new String[carta.size()];
+        for (int i = 0; i < carta.size(); i++) {
+            opciones[i] = carta.get(i).getDescripcion();
+        }
+
+        String seleccion = (String) JOptionPane.showInputDialog(null, "Seleccione un producto:", "Menú",
+                JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+
+        Producto productoADevolver = null;
+
+        for (Producto producto : carta) {
+            if (producto.getDescripcion().equals(seleccion)) {
+                productoADevolver = producto;
+                break;
+            }
+        }
+
+        return productoADevolver;
+
+    }
+
+    public static List<String> mostrarId(List<Producto> carta) {
+        List<String> formato = new ArrayList<>();
+
+        for (Producto producto : carta) {
+            String vale = "\n" + "El id de " + producto.getDescripcion() + " es " + producto.getIdProducto();
+
+            formato.add(vale);
+        }
+        return formato;
     }
 
     public static void anadirProducto(List<Producto> carta, String nombre, Categoria c, Subcategoria s) {
@@ -75,18 +122,121 @@ public class Funciones {
         Producto p1 = new Producto(nombre, c, s);
 
         if (p1.getCategoria() == null || p1.getSubcategoria() == null) {
-            System.out.println("No se ha podido añadir el producto porque no era válido");
+            JOptionPane.showMessageDialog(null, "Producto no válido");
         } else {
             carta.add(p1);
+            JOptionPane.showMessageDialog(null, "Producto añadido");
         }
 
     }
 
-    public static void borrarProducto(List<Producto> carta, String nombre) {
+    public static void anadirProductoExcepciones(List<Producto> carta) {
+        Categoria[] categorias = Categoria.values();
+        Subcategoria[] subcategorias = Subcategoria.values();
+        Subcategoria subcategoriaSeleccionada = Subcategoria.AGUA;
+        Categoria categoriaSeleccionada = Categoria.BEBIDA;
+        String nombre = "";
+        boolean valido = true;
+        boolean valido2 = true;
 
-        for (int i = 0; i < carta.size(); i++) {
-            if (nombre.equals(nombre)) {
-                carta.remove(i);
+        do {
+            try {
+
+                nombre = JOptionPane.showInputDialog(null, "Introduce el nombre del producto");
+
+                categoriaSeleccionada = (Categoria) JOptionPane.showInputDialog(null, "Seleccione una categoría:",
+                        "Selección de Categoría", JOptionPane.QUESTION_MESSAGE, null, categorias, categorias[0]);
+
+                do {
+
+                    switch (categoriaSeleccionada) {
+                        case POSTRE ->
+                            subcategoriaSeleccionada = (Subcategoria) JOptionPane.showInputDialog(null, "Seleccione una subcategoría:",
+                                    "Selección de Subcategoría", JOptionPane.QUESTION_MESSAGE, null, subcategorias, subcategorias[0]);
+                        case COMIDA ->
+                            subcategoriaSeleccionada = (Subcategoria) JOptionPane.showInputDialog(null, "Seleccione una subcategoría:",
+                                    "Selección de Subcategoría", JOptionPane.QUESTION_MESSAGE, null, subcategorias, subcategorias[0]);
+                        case BEBIDA ->
+                            subcategoriaSeleccionada = (Subcategoria) JOptionPane.showInputDialog(null, "Seleccione una subcategoría:",
+                                    "Selección de Subcategoría", JOptionPane.QUESTION_MESSAGE, null, subcategorias, subcategorias[0]);
+
+                    }
+
+                    if (categoriaSeleccionada == Categoria.COMIDA && (subcategoriaSeleccionada == Subcategoria.CARNE || subcategoriaSeleccionada == Subcategoria.PESCADO || subcategoriaSeleccionada == Subcategoria.VERDURA)) {
+                        valido2 = false;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Introduce una subcategoria válida");
+                    }
+                    if (categoriaSeleccionada == Categoria.BEBIDA && (subcategoriaSeleccionada == Subcategoria.AGUA || subcategoriaSeleccionada == Subcategoria.ALCOHOLICA || subcategoriaSeleccionada == Subcategoria.REFRESCO || subcategoriaSeleccionada == Subcategoria.ZUMO)) {
+                        valido2 = false;
+                    }
+                    if (categoriaSeleccionada == Categoria.POSTRE && (subcategoriaSeleccionada == Subcategoria.NULL)) {
+                        valido2 = false;
+                    }
+
+                } while (valido2);
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error");
+                valido = false;
+            }
+        } while (!valido);
+
+        anadirProducto(carta, nombre, categoriaSeleccionada, subcategoriaSeleccionada);
+
+    }
+
+    public static void borrarProducto(List<Producto> carta, int id) {
+
+        Iterator<Producto> iterator = carta.iterator();
+        while (iterator.hasNext()) {
+            Producto producto = iterator.next();
+            if (producto.getIdProducto() == id) {
+                iterator.remove();
+                JOptionPane.showMessageDialog(null, "Producto con ID " + id + " eliminado");
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(null, "No se encontró un producto con ID " + id);
+    }
+
+    public static void borrarProductoExcepciones(List<Producto> carta) {
+        boolean valido = true;
+        do {
+            try {
+
+                int id = Integer.parseInt(JOptionPane.showInputDialog(null, "Introduce el id del producto a borrar" + mostrarId(carta)));
+                borrarProducto(carta, id);
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(null, "Introduce un id");
+                valido = false;
+            }
+        } while (!valido);
+    }
+
+    private static void cambiarAtributos(Producto p) {
+
+        String[] opcionesAtributos = {"Descripción", "Precio", "Stock"};
+        int seleccionAtributo = JOptionPane.showOptionDialog(null, "Selecciona el atributo a cambiar", "Cambiar Atributo",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcionesAtributos,
+                opcionesAtributos[0]);
+
+        if (seleccionAtributo >= 0) {
+            String nuevoValorStr = JOptionPane.showInputDialog("Introduce el nuevo valor para " + opcionesAtributos[seleccionAtributo] + ":");
+
+            switch (seleccionAtributo) {
+                case 0 ->
+                    p.setDescripcion(nuevoValorStr);
+                case 1 -> {
+                    double nuevoPrecio = Double.parseDouble(nuevoValorStr);
+                    p.setPrecio(nuevoPrecio);
+                }
+                case 2 -> {
+                    int nuevoStock = Integer.parseInt(nuevoValorStr);
+                    p.setStock(nuevoStock);
+                }
+                default ->
+                    JOptionPane.showMessageDialog(null, "Opción no válida");
             }
         }
     }
@@ -95,13 +245,8 @@ public class Funciones {
 
         List<Producto> carta = crearCarta();
 
-        Funciones.mostrarLista(carta);
-//        anadirProducto(carta, "Pinchitos de cerdo", Categoria.COMIDA, Subcategoria.CARNE);
-//        System.out.println("----------------------------------------");
-//        Funciones.mostrarLista(carta);
-//        menuInicial(carta);
+//        JOptionPane.showMessageDialog(null, mostrarLista(carta));
 
-        borrarProducto(carta, "Solomillo de cerdo");
     }
 
     private static String generarContrasena() {
@@ -113,7 +258,6 @@ public class Funciones {
         Random random = new Random();
         StringBuilder contraseña = new StringBuilder();
 
-        // Añadir al menos uno de cada
         int indiceMinuscula = random.nextInt(caracteresMinuscula.length());
         contraseña.append(caracteresMinuscula.charAt(indiceMinuscula));
         int indiceMayuscula = random.nextInt(caracteresMinuscula.length());
@@ -123,7 +267,6 @@ public class Funciones {
         int indiceEspeciales = random.nextInt(caracteresEspeciales.length());
         contraseña.append(caracteresEspeciales.charAt(indiceEspeciales));
 
-        // Añadir el resto de la contraseña
         for (int i = 1; i < 3; i++) {
             String caracteres = caracteresMayuscula + caracteresMinuscula + caracteresNumeros;
             int indice = random.nextInt(caracteres.length());
@@ -135,21 +278,24 @@ public class Funciones {
     }
 
     public static void menuInicial(List<Producto> carta) {
+        String[] seleccion = {"Usuario", "Administrador", "Salir"};
 
-        String[] seleccion = {"Usuario", "Administrador"};
+        try {
+            int opcion = JOptionPane.showOptionDialog(null, "Elige una opcion", "Eleccion",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, seleccion, seleccion[0]);
 
-        int opcion = JOptionPane.showOptionDialog(null, "Elige una opcion", "Eleccion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, seleccion, seleccion[0]);
-
-        switch (opcion) {
-            case 0 ->
-                System.out.println("Eres usuario");
-            case 1 -> {
-                String contrasena = generarContrasena();
-                System.out.println(contrasena);
-                verificarContrasena(contrasena);
-                menuAdministrador(carta);
+            switch (opcion) {
+                case 0 ->
+                    System.out.println("Eres usuario");
+                case 1 -> {
+                    String contrasena = generarContrasena();
+                    System.out.println(contrasena);
+                    verificarContrasena(contrasena);
+                    menuAdministrador(carta);
+                }
             }
-
+        } catch (NullPointerException npe) {
+            JOptionPane.showMessageDialog(null, "Has cerrado el programa");
         }
     }
 
@@ -175,39 +321,27 @@ public class Funciones {
     }
 
     public static void menuAdministrador(List<Producto> carta) {
-        int admin = 0;
-        do {
-            
-        
-         admin = Integer.parseInt(JOptionPane.showInputDialog(null, """                                                                       
-                                                                        1.Cambiar datos
-                                                                        2.Dar de alta productos nuevos
-                                                                        3.Borrar productos
-                                                                        4.Consultar ventas
-                                                                        5.Consultar direccion o fecha
-                                                                        6.Salir
-                                                                       """));
-        } while (admin > 6 || admin < 1);
-        
-        switch (admin) {
-            case 1:
-                JOptionPane.showMessageDialog(null, "Cambiar datos de los productos");
-                break;
-            case 2:
-                String nombre = JOptionPane.showInputDialog(null, "Introduce el nombre del producto");
-                anadirProducto(carta, nombre, Categoria.COMIDA, Subcategoria.ZUMO);
-                break;
-            case 3:
-                String nombreProducto = JOptionPane.showInputDialog(null, "Introduce el id del producto a borrar");
-                borrarProducto(carta, nombreProducto);
-                break;
-            case 4:
-                subMenuConsultarVentas();
-                break;
-            case 5:
-                JOptionPane.showMessageDialog(null, "Consultar direccion o fecha");
+        String[] eleccionAdmin = {"Cambiar datos", "Añadir producto", "Borrar producto", "Consultar ventas", "Salir"};
 
-                break;
+        try {
+
+            int admin = JOptionPane.showOptionDialog(null, "Elige una accion",
+                    "Eleccion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, eleccionAdmin, eleccionAdmin[0]);
+
+            switch (admin) {
+                case 0 -> {
+                    Producto productoSeleccionado = mostrarMenuDesplegable(carta);
+                    cambiarAtributos(productoSeleccionado);
+                }
+                case 1 ->
+                    anadirProductoExcepciones(carta);
+                case 2 ->
+                    borrarProductoExcepciones(carta);
+                case 3 ->
+                    subMenuConsultarVentas();//Pendiente de hacer
+            }
+        } catch (NullPointerException npe) {
+            JOptionPane.showMessageDialog(null, "Has cerrado el programa");
         }
 
     }
@@ -217,20 +351,11 @@ public class Funciones {
         int ConsultaVentas = Integer.parseInt(JOptionPane.showInputDialog(null,
                 "Consultar ventas\n\n 1.En día concreto\n 2.Hasta una fecha\n 3.Ver todas las ventas\n 4.Salir"));
         switch (ConsultaVentas) {
-            case 1:
-                JOptionPane.showMessageDialog(null, "Día concreto");
-                break;
-            case 2:
-                JOptionPane.showMessageDialog(null, "Hasta una fecha");
-                break;
-            case 3:
-                JOptionPane.showMessageDialog(null, "Ver todas las ventas");
-                break;
-            case 4:
-                JOptionPane.showMessageDialog(null, "Salir");
-                break;
-            default:
-                JOptionPane.showInputDialog(null, "Opcion Incorrecta");
+            case 1 -> JOptionPane.showMessageDialog(null, "Día concreto");
+            case 2 -> JOptionPane.showMessageDialog(null, "Hasta una fecha");
+            case 3 -> JOptionPane.showMessageDialog(null, "Ver todas las ventas");
+            case 4 -> JOptionPane.showMessageDialog(null, "Salir");
+            default -> JOptionPane.showInputDialog(null, "Opcion Incorrecta");
         }
     }
 

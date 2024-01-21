@@ -6,6 +6,7 @@ package daw;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -26,8 +27,14 @@ public class Tpv {
         this.hora = LocalTime.now();
     }
 
+    public Tpv() {
+    }
+
     public void encenderTpv() {
         //contenido del programa
+        List<Producto> carta = Funciones.crearCarta();
+        Funciones.menuInicial(carta);
+         
     }
 
     public UUID getNumSerie() {
