@@ -5,6 +5,7 @@
 package daw;
 
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -25,6 +26,17 @@ public class Carrito {
         this.carrito = carrito;
     }
 
+    public static void anadirCarrito(List<Producto> carrito, Producto p ){
+        carrito.add(p);
+    }
+    
+    public static void verCarrito(List<Producto> carrito){
+        
+        
+        
+        
+        
+    }
     
     
     

@@ -4,7 +4,6 @@
  */
 package daw;
 
-import static daw.Categoria.POSTRE;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -64,6 +63,19 @@ public class Funciones {
         return lista;
     }
 
+    public static List<Producto> crearLista(List<Producto> carta, Categoria c) {
+
+        List<Producto> lista = new ArrayList<>();
+
+        for (Producto producto : carta) {
+            if (producto.getCategoria() == c) {
+                lista.add(producto);
+            }
+
+        }
+        return lista;
+    }
+
     public static List<String> mostrarLista(List<Producto> carta) {
         List<String> cartaConFormato = new ArrayList<>();
 
@@ -110,8 +122,9 @@ public class Funciones {
         List<String> formato = new ArrayList<>();
 
         for (Producto producto : carta) {
-            String vale = "\n" + "El id de " + producto.getDescripcion() + " es " + producto.getIdProducto();
-
+            String vale = """
+                         "El id de %s es %d
+                         """.formatted(producto.getDescripcion(), producto.getIdProducto());
             formato.add(vale);
         }
         return formato;
@@ -207,6 +220,7 @@ public class Funciones {
 
                 int id = Integer.parseInt(JOptionPane.showInputDialog(null, "Introduce el id del producto a borrar" + mostrarId(carta)));
                 borrarProducto(carta, id);
+                valido = true;
             } catch (NumberFormatException nfe) {
                 JOptionPane.showMessageDialog(null, "Introduce un id");
                 valido = false;
@@ -245,7 +259,7 @@ public class Funciones {
 
         List<Producto> carta = crearCarta();
 
-//        JOptionPane.showMessageDialog(null, mostrarLista(carta));
+        menuUsuario(carta);
 
     }
 
@@ -279,24 +293,27 @@ public class Funciones {
 
     public static void menuInicial(List<Producto> carta) {
         String[] seleccion = {"Usuario", "Administrador", "Salir"};
+        int opcion = 0;
+        do {
 
-        try {
-            int opcion = JOptionPane.showOptionDialog(null, "Elige una opcion", "Eleccion",
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, seleccion, seleccion[0]);
+            try {
+                opcion = JOptionPane.showOptionDialog(null, "Elige una opcion", "Eleccion",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, seleccion, seleccion[0]);
 
-            switch (opcion) {
-                case 0 ->
-                    System.out.println("Eres usuario");
-                case 1 -> {
-                    String contrasena = generarContrasena();
-                    System.out.println(contrasena);
-                    verificarContrasena(contrasena);
-                    menuAdministrador(carta);
+                switch (opcion) {
+                    case 0 ->
+                        menuUsuario(carta);
+                    case 1 -> {
+                        String contrasena = generarContrasena();
+                        System.out.println(contrasena);
+                        verificarContrasena(contrasena);
+                        menuAdministrador(carta);
+                    }
                 }
+            } catch (NullPointerException npe) {
+                JOptionPane.showMessageDialog(null, "Has cerrado el programa");
             }
-        } catch (NullPointerException npe) {
-            JOptionPane.showMessageDialog(null, "Has cerrado el programa");
-        }
+        } while (opcion != 2);
     }
 
     private static boolean verificarContrasena(String contrasenya) {
@@ -346,16 +363,51 @@ public class Funciones {
 
     }
 
+    public static void menuUsuario(List<Producto> carta) {
+        String[] eleccionUsuario = {"Ver comidas", "Ver bebidas", "Ver postres", "Carrito", "Salir"};
+        List<Producto> carrito = new ArrayList<>();
+        int usuario = 0;
+        do {
+
+            try {
+
+                usuario = JOptionPane.showOptionDialog(null, "Elige una opción",
+                        "Eleccion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, eleccionUsuario, eleccionUsuario[0]);
+
+                switch (usuario) {
+
+                    case 0 ->
+                        Carrito.anadirCarrito(carrito, mostrarMenuDesplegable(crearLista(carta, Categoria.COMIDA)));
+                    case 1 ->
+                        Carrito.anadirCarrito(carrito, mostrarMenuDesplegable(crearLista(carta, Categoria.BEBIDA)));
+                    case 2 ->
+                        Carrito.anadirCarrito(carrito, mostrarMenuDesplegable(crearLista(carta, Categoria.POSTRE)));
+                    case 3 -> {
+                        JOptionPane.showMessageDialog(null, "Ver carrito");
+                        Carrito.verCarrito(carrito);
+                    }
+                }
+            } catch (NullPointerException npe) {
+                JOptionPane.showMessageDialog(null, "Has cerrado el programa");
+            }
+        } while (usuario != 4);
+    }
+
     public static void subMenuConsultarVentas() {
 
         int ConsultaVentas = Integer.parseInt(JOptionPane.showInputDialog(null,
                 "Consultar ventas\n\n 1.En día concreto\n 2.Hasta una fecha\n 3.Ver todas las ventas\n 4.Salir"));
         switch (ConsultaVentas) {
-            case 1 -> JOptionPane.showMessageDialog(null, "Día concreto");
-            case 2 -> JOptionPane.showMessageDialog(null, "Hasta una fecha");
-            case 3 -> JOptionPane.showMessageDialog(null, "Ver todas las ventas");
-            case 4 -> JOptionPane.showMessageDialog(null, "Salir");
-            default -> JOptionPane.showInputDialog(null, "Opcion Incorrecta");
+            case 1 ->
+                JOptionPane.showMessageDialog(null, "Día concreto");
+            case 2 ->
+                JOptionPane.showMessageDialog(null, "Hasta una fecha");
+            case 3 ->
+                JOptionPane.showMessageDialog(null, "Ver todas las ventas");
+            case 4 ->
+                JOptionPane.showMessageDialog(null, "Salir");
+            default ->
+                JOptionPane.showInputDialog(null, "Opcion Incorrecta");
         }
     }
 
