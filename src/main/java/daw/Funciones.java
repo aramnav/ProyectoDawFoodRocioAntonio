@@ -397,6 +397,7 @@ public class Funciones {
         DecimalFormat dosDecimales = new DecimalFormat("#.##");
         String[] eleccionUsuario = {"Comprar", "No comprar"};
         double totalPrecio = 0.0;
+        double totalPrecioIva = 0;
         String[][] carritoMostrar = new String[carrito.size()][3];
 
         for (int i = 0; i < carrito.size(); i++) {
@@ -405,11 +406,13 @@ public class Funciones {
 
             try {
                 double precioTotal = producto.getPrecio() * cantidad;
+                double precioTotalIva = precioTotal * (producto.getIva().getTasa()+1);
                 carritoMostrar[i][0] = String.valueOf(cantidad);
                 carritoMostrar[i][1] = producto.getDescripcion();
                 carritoMostrar[i][2] = dosDecimales.format(precioTotal);
-
+                
                 totalPrecio += precioTotal;
+                totalPrecioIva += precioTotalIva;
             } catch (NumberFormatException nfe) {
                 JOptionPane.showMessageDialog(null, "Error");
             }
@@ -420,14 +423,14 @@ public class Funciones {
             texto.append(fila[0]).append(" ").append(fila[1]).append(" ").append(fila[2]).append("€\n");
         }
 
-        int comprar = JOptionPane.showOptionDialog(null, texto.toString() + dosDecimales.format(totalPrecio),
+        int comprar = JOptionPane.showOptionDialog(null, texto.toString() + dosDecimales.format(totalPrecio) + " Con Iva: "+ dosDecimales.format(totalPrecioIva),
                 "Carrito", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, eleccionUsuario, eleccionUsuario[0]);
 
         switch (comprar) {
             case 0 ->
-        Tarjeta.realizarTransaccionLoop();
-                case 1 -> {
+                Tarjeta.realizarTransaccionLoop();
+            case 1 -> {
                 carrito.clear();
                 cantidades.clear();
             }
