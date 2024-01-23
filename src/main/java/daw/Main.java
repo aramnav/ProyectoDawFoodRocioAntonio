@@ -15,9 +15,5 @@ public class Main {
 
         t1.encenderTpv();
         
-        
-        
-        
-        
     }
 }
