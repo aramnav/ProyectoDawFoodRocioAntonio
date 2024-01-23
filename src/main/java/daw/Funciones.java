@@ -393,7 +393,7 @@ public class Funciones {
         carrito.add(p);
     }
 
-    private static void verCarrito(List<Producto> carrito, List<Integer> cantidades) {
+    private static void verCarrito(List<Producto> carrito, List<Integer> cantidades) {  //añadir que si pones dos produtos iguales se sumen las cantidades
         DecimalFormat dosDecimales = new DecimalFormat("#.##");
         String[] eleccionUsuario = {"Comprar", "No comprar"};
         double totalPrecio = 0.0;
