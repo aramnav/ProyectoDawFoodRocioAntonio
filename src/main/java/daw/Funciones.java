@@ -426,8 +426,8 @@ public class Funciones {
 
         switch (comprar) {
             case 0 ->
-                JOptionPane.showMessageDialog(null, "Lo de la tarjeta");
-            case 1 -> {
+        Tarjeta.realizarTransaccionLoop();
+                case 1 -> {
                 carrito.clear();
                 cantidades.clear();
             }
