@@ -6,7 +6,6 @@ package daw;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -52,12 +51,12 @@ public class Funciones {
 
     }
 
-    public static List<Producto> crearLista(List<Producto> carta, Categoria c) {
+    public static List<Producto> crearLista(List<Producto> carta, Categoria c, Subcategoria s) {
 
         List<Producto> lista = new ArrayList<>();
 
         for (Producto producto : carta) {
-            if (producto.getCategoria() == c) {
+            if (producto.getCategoria() == c && producto.getSubcategoria() == s) {
                 lista.add(producto);
             }
 
@@ -67,11 +66,12 @@ public class Funciones {
 
     public static Producto mostrarMenuDesplegable(List<Producto> carta) {
         String[] opciones = new String[carta.size()];
+        String seleccion = "";
         for (int i = 0; i < carta.size(); i++) {
             opciones[i] = carta.get(i).getDescripcion();
         }
 
-        String seleccion = (String) JOptionPane.showInputDialog(null, "Seleccione un producto:", "Menú",
+        seleccion = (String) JOptionPane.showInputDialog(null, "Seleccione un producto:", "Menú",
                 JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
 
         Producto productoADevolver = null;
@@ -323,7 +323,7 @@ public class Funciones {
                 case 2 ->
                     borrarProductoExcepciones(carta);
                 case 3 ->
-                    subMenuConsultarVentas(tickets); // Pendiente de hacer
+                    subMenuConsultarVentas(tickets);
             }
         } while (admin != 4);
     }
@@ -340,8 +340,8 @@ public class Funciones {
 
             switch (usuario) {
 
-                case 0 -> {
-                    Producto p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.COMIDA));
+                case 0 -> {//llamar metodo subcategorias
+                    Producto p1 = menuSubcategoriaComida(carta);
                     if (p1 == null) {
                         break;
                     }
@@ -350,7 +350,7 @@ public class Funciones {
                     cantidades.add(cantidad);
                 }
                 case 1 -> {
-                    Producto p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA));
+                    Producto p1 = menuSubcategoriaComida(carta);
                     if (p1 == null) {
                         break;
                     }
@@ -360,7 +360,7 @@ public class Funciones {
 
                 }
                 case 2 -> {
-                    Producto p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.POSTRE));
+                    Producto p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.POSTRE, Subcategoria.NULL));
                     if (p1 == null) {
                         break;
                     }
@@ -375,6 +375,36 @@ public class Funciones {
             }
 
         } while (usuario != 4);
+    }
+
+    public static Producto menuSubcategoriaComida(List<Producto> carta) {
+        String[] eleccionUsuario = {"Carne", "Pescado", "Verdura", "Volver atrás"};
+        int subcategoria = 0;
+        Producto p1 = new Producto();
+
+        subcategoria = JOptionPane.showOptionDialog(null, "Elige una opción",
+                "Eleccion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, eleccionUsuario, eleccionUsuario[0]);
+
+        switch (subcategoria) {
+            case 0 -> {
+                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.COMIDA, Subcategoria.CARNE));
+                return p1;
+            }
+            case 1 -> {
+                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.COMIDA, Subcategoria.PESCADO));
+                return p1;
+            }
+            case 2 -> {
+                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.COMIDA, Subcategoria.VERDURA));
+                return p1;
+            }
+            case 3 -> {
+                p1 = null;
+
+                break;
+            }
+        }
+        return p1;
     }
 
     private static int obtenerCantidadProducto(Producto producto) {
@@ -441,7 +471,6 @@ public class Funciones {
         int comprar = JOptionPane.showOptionDialog(null, carrito.isEmpty() ? "El carrito esta vacío" : texto.toString() + "Total: " + dosDecimales.format(totalPrecio) + "€ " + " Con Iva: " + dosDecimales.format(totalPrecioIva) + "€",
                 "Carrito", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, eleccionUsuario, eleccionUsuario[0]);
-
         switch (comprar) {
             case 0 ->
                 realizarTransaccion(carrito, cantidades, totalPrecioIva, tickets);
