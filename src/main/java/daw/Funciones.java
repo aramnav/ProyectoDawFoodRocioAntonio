@@ -5,6 +5,8 @@
 package daw;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -95,6 +97,11 @@ public class Funciones {
 
         String seleccion = (String) JOptionPane.showInputDialog(null, "Seleccione un producto:", "Menú",
                 JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+
+        if (seleccion == null) {
+            return null;
+
+        }
 
         Producto productoADevolver = null;
 
@@ -224,13 +231,6 @@ public class Funciones {
         }
     }
 
-    public static void main(String[] messi) {
-
-        List<Producto> carta = crearCarta();
-
-        menuUsuario(carta);
-    }
-
     public static String generarContrasena() {
         String caracteresMayuscula = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String caracteresMinuscula = "abcdefghijklmnopqrstuvwxyz";
@@ -261,6 +261,7 @@ public class Funciones {
 
     public static void menuInicial(List<Producto> carta) {
         String[] seleccion = {"Usuario", "Administrador", "Salir"};
+        List<Ticket> tickets = new ArrayList<>();
         int opcion = 0;
         do {
 
@@ -270,12 +271,12 @@ public class Funciones {
 
                 switch (opcion) {
                     case 0 ->
-                        menuUsuario(carta);
+                        menuUsuario(carta, tickets);
                     case 1 -> {
                         String contrasena = generarContrasena();
                         System.out.println(contrasena);
                         verificarContrasena(contrasena);
-                        menuAdministrador(carta);
+                        menuAdministrador(carta, tickets);
                     }
                 }
             } catch (NullPointerException npe) {
@@ -304,7 +305,7 @@ public class Funciones {
 
     }
 
-    public static void menuAdministrador(List<Producto> carta) {
+    public static void menuAdministrador(List<Producto> carta, List<Ticket> tickets) {
         String[] eleccionAdmin = {"Cambiar datos", "Añadir producto", "Borrar producto", "Consultar ventas", "Salir"};
         int admin;
 
@@ -322,12 +323,12 @@ public class Funciones {
                 case 2 ->
                     borrarProductoExcepciones(carta);
                 case 3 ->
-                    subMenuConsultarVentas(); // Pendiente de hacer
+                    subMenuConsultarVentas(tickets); // Pendiente de hacer
             }
         } while (admin != 4);
     }
 
-    public static void menuUsuario(List<Producto> carta) {
+    public static void menuUsuario(List<Producto> carta, List<Ticket> tickets) {
         String[] eleccionUsuario = {"Ver comidas", "Ver bebidas", "Ver postres", "Carrito", "Volver atrás"};
         List<Producto> carrito = new ArrayList<>();
         int usuario = 0;
@@ -341,12 +342,18 @@ public class Funciones {
 
                 case 0 -> {
                     Producto p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.COMIDA));
+                    if (p1 == null) {
+                        break;
+                    }
                     anadirCarrito(carrito, p1);
                     cantidad = obtenerCantidadProducto(p1);
                     cantidades.add(cantidad);
                 }
                 case 1 -> {
                     Producto p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA));
+                    if (p1 == null) {
+                        break;
+                    }
                     anadirCarrito(carrito, p1);
                     cantidad = obtenerCantidadProducto(p1);
                     cantidades.add(cantidad);
@@ -354,13 +361,16 @@ public class Funciones {
                 }
                 case 2 -> {
                     Producto p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.POSTRE));
+                    if (p1 == null) {
+                        break;
+                    }
                     anadirCarrito(carrito, p1);
                     cantidad = obtenerCantidadProducto(p1);
                     cantidades.add(cantidad);
 
                 }
                 case 3 -> {
-                    verCarrito(carrito, cantidades);
+                    verCarrito(carrito, cantidades, tickets);
                 }
             }
 
@@ -393,9 +403,13 @@ public class Funciones {
         carrito.add(p);
     }
 
-    private static void verCarrito(List<Producto> carrito, List<Integer> cantidades) {  //añadir que si pones dos produtos iguales se sumen las cantidades
+    public static void anadirTicket(List<Ticket> tickets, Ticket t) {
+        tickets.add(t);
+    }
+
+    private static void verCarrito(List<Producto> carrito, List<Integer> cantidades, List<Ticket> tickets) {  //añadir que si pones dos produtos iguales se sumen las cantidades
         DecimalFormat dosDecimales = new DecimalFormat("#.##");
-        String[] eleccionUsuario = {"Comprar", "No comprar"};
+        String[] eleccionUsuario = {"Comprar", "No comprar", "Seguir comprando"};
         double totalPrecio = 0.0;
         double totalPrecioIva = 0;
         String[][] carritoMostrar = new String[carrito.size()][3];
@@ -406,11 +420,12 @@ public class Funciones {
 
             try {
                 double precioTotal = producto.getPrecio() * cantidad;
-                double precioTotalIva = precioTotal * (producto.getIva().getTasa()+1);
+                double precioTotalIva = precioTotal * (producto.getIva().getTasa() + 1);
+
                 carritoMostrar[i][0] = String.valueOf(cantidad);
                 carritoMostrar[i][1] = producto.getDescripcion();
                 carritoMostrar[i][2] = dosDecimales.format(precioTotal);
-                
+
                 totalPrecio += precioTotal;
                 totalPrecioIva += precioTotalIva;
             } catch (NumberFormatException nfe) {
@@ -423,13 +438,13 @@ public class Funciones {
             texto.append(fila[0]).append(" ").append(fila[1]).append(" ").append(fila[2]).append("€\n");
         }
 
-        int comprar = JOptionPane.showOptionDialog(null, texto.toString() + dosDecimales.format(totalPrecio) + " Con Iva: "+ dosDecimales.format(totalPrecioIva),
+        int comprar = JOptionPane.showOptionDialog(null, carrito.isEmpty() ? "El carrito esta vacío" : texto.toString() + "Total: " + dosDecimales.format(totalPrecio) + "€ " + " Con Iva: " + dosDecimales.format(totalPrecioIva) + "€",
                 "Carrito", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, eleccionUsuario, eleccionUsuario[0]);
 
         switch (comprar) {
             case 0 ->
-                Tarjeta.realizarTransaccionLoop();
+                realizarTransaccion(carrito, cantidades, totalPrecioIva, tickets);
             case 1 -> {
                 carrito.clear();
                 cantidades.clear();
@@ -437,21 +452,103 @@ public class Funciones {
         }
     }
 
-    public static void subMenuConsultarVentas() {
+    public static void subMenuConsultarVentas(List<Ticket> tickets) {
+        String[] eleccionVentas = {"Hoy", "Hasta una fecha", "Siempre", "Salir"};
+        int consultaVentas = 0;
 
-        int ConsultaVentas = Integer.parseInt(JOptionPane.showInputDialog(null,
-                "Consultar ventas\n\n 1.En día concreto\n 2.Hasta una fecha\n 3.Ver todas las ventas\n 4.Salir"));
-        switch (ConsultaVentas) {
+        consultaVentas = JOptionPane.showOptionDialog(null, "Consultar ventas de ",
+                "Eleccion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, eleccionVentas, null);
+        switch (consultaVentas) {
+            case 0 ->
+                consultarVentasHoy(tickets);
             case 1 ->
-                JOptionPane.showMessageDialog(null, "Día concreto");
-            case 2 ->
                 JOptionPane.showMessageDialog(null, "Hasta una fecha");
-            case 3 ->
-                JOptionPane.showMessageDialog(null, "Ver todas las ventas");
-            case 4 ->
-                JOptionPane.showMessageDialog(null, "Salir");
-            default ->
-                JOptionPane.showInputDialog(null, "Opcion Incorrecta");
+            case 2 ->
+                JOptionPane.showMessageDialog(null, "Siempre");
         }
     }
+
+    public static void consultarVentasHoy(List<Ticket> tickets) {
+        List<Integer> ticketsHoy = new ArrayList<>();
+        for (Ticket ticket : tickets) {
+            if (ticket.getFecha().equals(LocalDate.now())) {
+                ticketsHoy.add(ticket.getIdTicket());
+            }
+        }
+        JOptionPane.showMessageDialog(null, ticketsHoy);
+    }
+
+    public static void realizarTransaccion(List<Producto> carrito, List<Integer> cantidades, double precio, List<Ticket> tickets) {
+        boolean esNumeroDeCuatroDigitos = false;
+        boolean esFecha = false;
+        boolean esCvv = false;
+        String ultimosCuatroDigitos = "";
+        String fecha = "";
+        String cvv = "";
+        List<Tarjeta> tarjetasValidas = crearTarjetasValidas();
+
+        do {
+            ultimosCuatroDigitos = JOptionPane.showInputDialog(null, "Ingrese los últimos 4 dígitos de su tarjeta: ");
+
+            esNumeroDeCuatroDigitos = ultimosCuatroDigitos.matches("\\d{4}");
+
+            if (!esNumeroDeCuatroDigitos) {
+                JOptionPane.showMessageDialog(null, "Número de tarjeta inválido. Por favor, inténtelo de nuevo.");
+            }
+
+        } while (!esNumeroDeCuatroDigitos);
+
+        do {
+            fecha = JOptionPane.showInputDialog(null, "Ingrese la fecha de caducidad de su tarjeta (MM/YY): ");
+
+            esFecha = fecha.matches("(0[1-9]|1[0-2])\\/([0-9]{2})");
+
+            if (!esFecha) {
+                JOptionPane.showMessageDialog(null, "Fecha de caducidad inválida. Por favor, inténtelo de nuevo.");
+            }
+
+        } while (!esFecha);
+
+        do {
+            cvv = JOptionPane.showInputDialog(null, "Ingrese el CVV de su tarjeta: ");
+
+            esCvv = cvv.matches("\\d{3}");
+
+            if (!esCvv) {
+                JOptionPane.showMessageDialog(null, "CVV inválido. Por favor, inténtelo de nuevo.");
+            }
+
+        } while (!esCvv);
+
+        Tarjeta t1 = new Tarjeta(ultimosCuatroDigitos, fecha, cvv);
+
+        if (t1.comprobarTarjeta(tarjetasValidas)) {
+            if (precio < t1.getSaldo()) {
+                t1.setSaldo(precio - t1.getSaldo());
+                Ticket ticket = new Ticket(cantidades, carrito, precio);
+                ticket.imprimirTicket();
+                anadirTicket(tickets, ticket);
+                carrito.clear();
+            } else {
+                JOptionPane.showMessageDialog(null, "Saldo insuficiente", "Error", JOptionPane.ERROR_MESSAGE);
+                carrito.clear();
+            }
+        }
+    }
+
+    public static List<Tarjeta> crearTarjetasValidas() {
+        List<Tarjeta> tarjetasValidas = new ArrayList<>();
+
+        tarjetasValidas.add(new Tarjeta("1234", "01/28", "123"));
+        tarjetasValidas.add(new Tarjeta("4542", "01/28", "986"));
+        tarjetasValidas.add(new Tarjeta("9886", "10/30", "548"));
+        tarjetasValidas.add(new Tarjeta("9821", "09/26", "897"));
+
+        for (Tarjeta tarjetaValida : tarjetasValidas) {
+            System.out.println(tarjetaValida.toString());
+        }
+
+        return tarjetasValidas;
+    }
+
 }
