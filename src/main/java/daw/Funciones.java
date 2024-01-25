@@ -74,6 +74,11 @@ public class Funciones {
         seleccion = (String) JOptionPane.showInputDialog(null, "Seleccione un producto:", "Menú",
                 JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
 
+        if (seleccion == null) {
+            return null;
+
+        }
+
         Producto productoADevolver = null;
 
         for (Producto producto : carta) {
@@ -127,70 +132,58 @@ public class Funciones {
         return formato;
     }
 
-    public static void anadirProducto(List<Producto> carta, String nombre, Categoria c, Subcategoria s) {
-
-        Producto p1 = new Producto(nombre, c, s);
-
-        if (p1.getCategoria() == null || p1.getSubcategoria() == null) {
-            JOptionPane.showMessageDialog(null, "Producto no válido");
-        } else {
-            carta.add(p1);
-            JOptionPane.showMessageDialog(null, "Producto añadido");
-        }
-
-    }
-
-    public static void anadirProductoExcepciones(List<Producto> carta) {
-        Categoria[] categorias = Categoria.values();
-        Subcategoria[] subcategorias = Subcategoria.values();
-        Subcategoria subcategoriaSeleccionada = Subcategoria.AGUA;
-        Categoria categoriaSeleccionada = Categoria.BEBIDA;
+    public static void añadirProductoExcepciones(List<Producto> carta) {
         String nombre = "";
+        Categoria categoriaSeleccionada = null;
+        Subcategoria subcategoriaSeleccionada = null;
         boolean valido = true;
-        boolean valido2 = true;
 
         do {
             try {
-
                 nombre = JOptionPane.showInputDialog(null, "Introduce el nombre del producto");
+                if (nombre == null) {
+                    break;
+                }
 
                 categoriaSeleccionada = (Categoria) JOptionPane.showInputDialog(null, "Seleccione una categoría:",
-                        "Selección de Categoría", JOptionPane.QUESTION_MESSAGE, null, categorias, categorias[0]);
+                        "Selección de Categoría", JOptionPane.QUESTION_MESSAGE, null, Categoria.values(), Categoria.BEBIDA);
+                if (categoriaSeleccionada == null) {
+                    break;
+                }
 
-                do {
+                subcategoriaSeleccionada = (Subcategoria) JOptionPane.showInputDialog(null, "Seleccione una subcategoría:",
+                        "Selección de Subcategoría", JOptionPane.QUESTION_MESSAGE, null, Subcategoria.values(), Subcategoria.AGUA);
+                if (subcategoriaSeleccionada == null) {
+                    break;
+                }
 
-                    switch (categoriaSeleccionada) {
-                        case POSTRE ->
-                            subcategoriaSeleccionada = (Subcategoria) JOptionPane.showInputDialog(null, "Seleccione una subcategoría:",
-                                    "Selección de Subcategoría", JOptionPane.QUESTION_MESSAGE, null, subcategorias, subcategorias[0]);
-                        case COMIDA ->
-                            subcategoriaSeleccionada = (Subcategoria) JOptionPane.showInputDialog(null, "Seleccione una subcategoría:",
-                                    "Selección de Subcategoría", JOptionPane.QUESTION_MESSAGE, null, subcategorias, subcategorias[0]);
-                        case BEBIDA ->
-                            subcategoriaSeleccionada = (Subcategoria) JOptionPane.showInputDialog(null, "Seleccione una subcategoría:",
-                                    "Selección de Subcategoría", JOptionPane.QUESTION_MESSAGE, null, subcategorias, subcategorias[0]);
-
-                    }
-
-                    if (categoriaSeleccionada == Categoria.COMIDA && (subcategoriaSeleccionada == Subcategoria.CARNE || subcategoriaSeleccionada == Subcategoria.PESCADO || subcategoriaSeleccionada == Subcategoria.VERDURA)) {
-                        valido2 = false;
-                    }
-                    if (categoriaSeleccionada == Categoria.BEBIDA && (subcategoriaSeleccionada == Subcategoria.AGUA || subcategoriaSeleccionada == Subcategoria.ALCOHOLICA || subcategoriaSeleccionada == Subcategoria.REFRESCO || subcategoriaSeleccionada == Subcategoria.ZUMO)) {
-                        valido2 = false;
-                    }
-                    if (categoriaSeleccionada == Categoria.POSTRE && (subcategoriaSeleccionada == Subcategoria.NULL)) {
-                        valido2 = false;
-                    }
-
-                } while (valido2);
+                if (categoriaSeleccionada == Categoria.COMIDA
+                        && (subcategoriaSeleccionada == Subcategoria.CARNE || subcategoriaSeleccionada == Subcategoria.PESCADO || subcategoriaSeleccionada == Subcategoria.VERDURA)) {
+                    valido = false;
+                } else if (categoriaSeleccionada == Categoria.BEBIDA
+                        && (subcategoriaSeleccionada == Subcategoria.AGUA || subcategoriaSeleccionada == Subcategoria.ALCOHOLICA || subcategoriaSeleccionada == Subcategoria.REFRESCO || subcategoriaSeleccionada == Subcategoria.ZUMO)) {
+                    valido = false;
+                } else if (categoriaSeleccionada == Categoria.POSTRE && subcategoriaSeleccionada == Subcategoria.NULL) {
+                    valido = false;
+                }
 
             } catch (NumberFormatException nfe) {
-                valido = false;
+                JOptionPane.showMessageDialog(null, "Error en el formato. Introduce valores válidos.");
             }
-        } while (!valido);
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Nombre vacío");
+            } else if (valido) {
+                JOptionPane.showMessageDialog(null, "Combinacion de categorias erronea");
+            }
+        } while (nombre.isEmpty() || categoriaSeleccionada == null || subcategoriaSeleccionada == null || valido);
 
-        anadirProducto(carta, nombre, categoriaSeleccionada, subcategoriaSeleccionada);
-
+        Producto nuevoProducto = new Producto(nombre, categoriaSeleccionada, subcategoriaSeleccionada);
+        if (nuevoProducto.getDescripcion() == null || nuevoProducto.getCategoria() == null || nuevoProducto.getSubcategoria() == null) {
+            JOptionPane.showMessageDialog(null, "No se ha podido añadir el producto");
+        } else {
+            carta.add(nuevoProducto);
+            JOptionPane.showMessageDialog(null, "Producto añadido");
+        }
     }
 
     public static void borrarProductoExcepciones(List<Producto> carta) {
@@ -209,25 +202,37 @@ public class Funciones {
     public static void cambiarAtributos(Producto p) {
 
         String[] opcionesAtributos = {"Descripción", "Precio", "Stock"};
+        String nuevoValorStr = "";
+        boolean vacio = false;
         int seleccionAtributo = JOptionPane.showOptionDialog(null, "Selecciona el atributo a cambiar", "Cambiar Atributo",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcionesAtributos,
                 opcionesAtributos[0]);
 
         if (seleccionAtributo >= 0) {
-            String nuevoValorStr = JOptionPane.showInputDialog("Introduce el nuevo valor para " + opcionesAtributos[seleccionAtributo] + ":");
+            do {
 
-            switch (seleccionAtributo) {
-                case 0 ->
-                    p.setDescripcion(nuevoValorStr);
-                case 1 -> {
-                    double nuevoPrecio = Double.parseDouble(nuevoValorStr);
-                    p.setPrecio(nuevoPrecio);
+                nuevoValorStr = JOptionPane.showInputDialog("Introduce el nuevo valor para " + opcionesAtributos[seleccionAtributo] + ":");
+                if (nuevoValorStr == null) {
+                    break;
+                } else if (nuevoValorStr.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Introduce un numero mayor a 0");
+                    vacio = true;
                 }
-                case 2 -> {
-                    int nuevoStock = Integer.parseInt(nuevoValorStr);
-                    p.setStock(nuevoStock);
+                switch (seleccionAtributo) {
+                    case 0 -> {
+                        p.setDescripcion(nuevoValorStr);
+                    }
+                    case 1 -> {
+                        double nuevoPrecio = Double.parseDouble(nuevoValorStr);
+                        p.setPrecio(nuevoPrecio);
+                    }
+                    case 2 -> {
+                        int nuevoStock = Integer.parseInt(nuevoValorStr);
+                        p.setStock(nuevoStock);
+                    }
                 }
-            }
+
+            } while (vacio);
         }
     }
 
@@ -316,10 +321,13 @@ public class Funciones {
             switch (admin) {
                 case 0 -> {
                     Producto productoSeleccionado = mostrarMenuDesplegable(carta);
+                    if (productoSeleccionado == null) {
+                        break;
+                    }
                     cambiarAtributos(productoSeleccionado);
                 }
                 case 1 ->
-                    anadirProductoExcepciones(carta);
+                    añadirProductoExcepciones(carta);
                 case 2 ->
                     borrarProductoExcepciones(carta);
                 case 3 ->
@@ -340,7 +348,7 @@ public class Funciones {
 
             switch (usuario) {
 
-                case 0 -> {//llamar metodo subcategorias
+                case 0 -> {
                     Producto p1 = menuSubcategoriaComida(carta);
                     if (p1 == null) {
                         break;
@@ -348,15 +356,17 @@ public class Funciones {
                     anadirCarrito(carrito, p1);
                     cantidad = obtenerCantidadProducto(p1);
                     cantidades.add(cantidad);
+                     JOptionPane.showMessageDialog(null, "Producto añadido correctamente");
                 }
                 case 1 -> {
-                    Producto p1 = menuSubcategoriaComida(carta);
+                    Producto p1 = menuSubcategoriaBebida(carta);
                     if (p1 == null) {
                         break;
                     }
                     anadirCarrito(carrito, p1);
                     cantidad = obtenerCantidadProducto(p1);
                     cantidades.add(cantidad);
+                     JOptionPane.showMessageDialog(null, "Producto añadido correctamente");
 
                 }
                 case 2 -> {
@@ -365,6 +375,7 @@ public class Funciones {
                         break;
                     }
                     anadirCarrito(carrito, p1);
+                    JOptionPane.showMessageDialog(null, "Producto añadido correctamente");
                     cantidad = obtenerCantidadProducto(p1);
                     cantidades.add(cantidad);
 
@@ -400,8 +411,38 @@ public class Funciones {
             }
             case 3 -> {
                 p1 = null;
+            }
+        }
+        return p1;
+    }
 
-                break;
+    public static Producto menuSubcategoriaBebida(List<Producto> carta) {
+        String[] eleccionUsuario = {"Agua", "Zumo", "Refresco", "Alcoholica", "Volver atrás"};
+        int subcategoria = 0;
+        Producto p1 = new Producto();
+
+        subcategoria = JOptionPane.showOptionDialog(null, "Elige una opción",
+                "Eleccion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, eleccionUsuario, eleccionUsuario[0]);
+
+        switch (subcategoria) {
+            case 0 -> {
+                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.AGUA));
+                return p1;
+            }
+            case 1 -> {
+                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.ZUMO));
+                return p1;
+            }
+            case 2 -> {
+                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.REFRESCO));
+                return p1;
+            }
+            case 3 -> {
+                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.ALCOHOLICA));
+                return p1;
+            }
+            case 4 -> {
+                p1 = null;
             }
         }
         return p1;
@@ -437,7 +478,7 @@ public class Funciones {
         tickets.add(t);
     }
 
-    private static void verCarrito(List<Producto> carrito, List<Integer> cantidades, List<Ticket> tickets) {  //añadir que si pones dos produtos iguales se sumen las cantidades
+    private static void verCarrito(List<Producto> carrito, List<Integer> cantidades, List<Ticket> tickets) {
         DecimalFormat dosDecimales = new DecimalFormat("#.##");
         String[] eleccionUsuario = {"Comprar", "No comprar", "Seguir comprando"};
         double totalPrecio = 0.0;
