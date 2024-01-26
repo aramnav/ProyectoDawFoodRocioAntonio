@@ -210,7 +210,7 @@ public class Funciones {
 
         if (seleccionAtributo >= 0) {
             do {
-
+                try {
                 nuevoValorStr = JOptionPane.showInputDialog("Introduce el nuevo valor para " + opcionesAtributos[seleccionAtributo] + ":");
                 if (nuevoValorStr == null) {
                     break;
@@ -231,7 +231,10 @@ public class Funciones {
                         p.setStock(nuevoStock);
                     }
                 }
-
+                
+                } catch (NumberFormatException nfe) {
+                    JOptionPane.showMessageDialog(null, "Introduce un numero");
+                }
             } while (vacio);
         }
     }
