@@ -88,4 +88,26 @@ public class Ticket {
         return idTicket;
     }
 
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+    
+    
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Ticket{");
+        sb.append("idTicket=").append(idTicket);
+        sb.append(", precio=").append(precio);
+        sb.append('}');
+        return sb.toString();
+    }
+    
+    
+
 }

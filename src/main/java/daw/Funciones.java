@@ -200,10 +200,8 @@ public class Funciones {
     }
 
     public static void cambiarAtributos(Producto p) {
-
         String[] opcionesAtributos = {"Descripción", "Precio", "Stock"};
-        String nuevoValorStr = "";
-        boolean vacio = false;
+        boolean valido = false;
         int seleccionAtributo = JOptionPane.showOptionDialog(null, "Selecciona el atributo a cambiar", "Cambiar Atributo",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcionesAtributos,
                 opcionesAtributos[0]);
@@ -211,31 +209,39 @@ public class Funciones {
         if (seleccionAtributo >= 0) {
             do {
                 try {
-                nuevoValorStr = JOptionPane.showInputDialog("Introduce el nuevo valor para " + opcionesAtributos[seleccionAtributo] + ":");
-                if (nuevoValorStr == null) {
-                    break;
-                } else if (nuevoValorStr.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Introduce un numero mayor a 0");
-                    vacio = true;
-                }
-                switch (seleccionAtributo) {
-                    case 0 -> {
-                        p.setDescripcion(nuevoValorStr);
+                    String nuevoValorStr = JOptionPane.showInputDialog("Introduce el nuevo valor para " + opcionesAtributos[seleccionAtributo] + ":");
+                    if (nuevoValorStr == null) {
+                        break;
+                    } else {
+                        switch (seleccionAtributo) {
+                            case 0 -> {
+                                p.setDescripcion(nuevoValorStr);
+                                valido = true;
+                            }
+                            case 1 -> {
+                                double nuevoPrecio = Double.parseDouble(nuevoValorStr);
+                                if (nuevoPrecio > 0) {
+                                    p.setPrecio(nuevoPrecio);
+                                    valido = true;
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Introduce un precio mayor a 0");
+                                }
+                            }
+                            case 2 -> {
+                                int nuevoStock = Integer.parseInt(nuevoValorStr);
+                                if (nuevoStock > 0) {
+                                    p.setStock(nuevoStock);
+                                    valido = true;
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Introduce un stock mayor a 0");
+                                }
+                            }
+                        }
                     }
-                    case 1 -> {
-                        double nuevoPrecio = Double.parseDouble(nuevoValorStr);
-                        p.setPrecio(nuevoPrecio);
-                    }
-                    case 2 -> {
-                        int nuevoStock = Integer.parseInt(nuevoValorStr);
-                        p.setStock(nuevoStock);
-                    }
-                }
-                
                 } catch (NumberFormatException nfe) {
-                    JOptionPane.showMessageDialog(null, "Introduce un numero");
+                    JOptionPane.showMessageDialog(null, "Introduce un número válido");
                 }
-            } while (vacio);
+            } while (!valido);
         }
     }
 
@@ -359,7 +365,7 @@ public class Funciones {
                     anadirCarrito(carrito, p1);
                     cantidad = obtenerCantidadProducto(p1);
                     cantidades.add(cantidad);
-                     JOptionPane.showMessageDialog(null, "Producto añadido correctamente");
+                    JOptionPane.showMessageDialog(null, "Producto añadido correctamente");
                 }
                 case 1 -> {
                     Producto p1 = menuSubcategoriaBebida(carta);
@@ -369,7 +375,7 @@ public class Funciones {
                     anadirCarrito(carrito, p1);
                     cantidad = obtenerCantidadProducto(p1);
                     cantidades.add(cantidad);
-                     JOptionPane.showMessageDialog(null, "Producto añadido correctamente");
+                    JOptionPane.showMessageDialog(null, "Producto añadido correctamente");
 
                 }
                 case 2 -> {
@@ -457,7 +463,7 @@ public class Funciones {
         try {
             int cantidad = Integer.parseInt(cantidadStr);
 
-            if (cantidad == 0) {
+            if (cantidad <= 0) {
                 JOptionPane.showMessageDialog(null, "Ingrese un número mayor a 0.", "Error", JOptionPane.ERROR_MESSAGE);
                 return obtenerCantidadProducto(producto);
             } else if (cantidad > producto.getStock()) {
@@ -542,10 +548,15 @@ public class Funciones {
     }
 
     public static void consultarVentasHoy(List<Ticket> tickets) {
-        List<Integer> ticketsHoy = new ArrayList<>();
+        List<String> ticketsHoy = new ArrayList<>();
+                DecimalFormat dosDecimales = new DecimalFormat("#.##");
+        String venta = "";
         for (Ticket ticket : tickets) {
             if (ticket.getFecha().equals(LocalDate.now())) {
-                ticketsHoy.add(ticket.getIdTicket());
+
+                venta = "Id: " + ticket.getIdTicket() + " -> " + dosDecimales.format(ticket.getPrecio()) + "€";
+                ticketsHoy.add(venta);
+
             }
         }
         JOptionPane.showMessageDialog(null, ticketsHoy);
