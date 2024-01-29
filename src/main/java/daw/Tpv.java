@@ -31,9 +31,6 @@ public class Tpv {
     }
 
     public void encenderTpv() {
-        List<Producto> carta = Funciones.crearCarta();
-        Funciones.menuInicial(carta);
-
     }
 
     public UUID getNumSerie() {

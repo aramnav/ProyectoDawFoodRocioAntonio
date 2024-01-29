@@ -51,6 +51,7 @@ public class Funciones {
 
     }
 
+
     public static List<Producto> crearLista(List<Producto> carta, Categoria c, Subcategoria s) {
 
         List<Producto> lista = new ArrayList<>();
@@ -345,7 +346,7 @@ public class Funciones {
         } while (admin != 4);
     }
 
-    public static void menuUsuario(List<Producto> carta, List<Ticket> tickets) {
+   public static void menuUsuario(List<Producto> carta, List<Ticket> tickets) {
         String[] eleccionUsuario = {"Ver comidas", "Ver bebidas", "Ver postres", "Carrito", "Volver atrás"};
         List<Producto> carrito = new ArrayList<>();
         int usuario = 0;
@@ -396,6 +397,7 @@ public class Funciones {
 
         } while (usuario != 4);
     }
+    
 
     public static Producto menuSubcategoriaComida(List<Producto> carta) {
         String[] eleccionUsuario = {"Carne", "Pescado", "Verdura", "Volver atrás"};
@@ -452,6 +454,40 @@ public class Funciones {
             }
             case 4 -> {
                 p1 = null;
+            }
+        }
+        return p1;
+    }
+    
+     public static Producto menuSubcategoriaBebida(List<Producto> carta) {
+        String[] eleccionUsuario = {"Alcoholica", "Refrescos", "Zumos","Agua"," Volver atrás"};
+        int subcategoria = 0;
+        Producto p1 = new Producto();
+
+        subcategoria = JOptionPane.showOptionDialog(null, "Elige una opción",
+                "Eleccion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, eleccionUsuario, eleccionUsuario[0]);
+
+        switch (subcategoria) {
+            case 0 -> {
+                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.ALCOHOLICA));
+                return p1;
+            }
+            case 1 -> {
+                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.REFRESCO));
+                return p1;
+            }
+            case 2 -> {
+                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.ZUMO));
+                return p1;
+            }
+             case 3 -> {
+                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.AGUA));
+                return p1;
+             }
+            case 4 -> {
+                p1 = null;
+
+                break;
             }
         }
         return p1;
