@@ -48,11 +48,7 @@ public class Tpv {
                 JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,
                 null, botones, botones[0]);
     }
-    }
-
-    public void encenderTpv() {
-    }
-
+    
     public UUID getNumSerie() {
         return numSerie;
     }
@@ -71,10 +67,6 @@ public class Tpv {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
-    }
-
-    public static void encenderTpv(){
-        Funciones.menuInicial();
     }
     
 }
