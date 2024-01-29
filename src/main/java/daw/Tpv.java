@@ -53,4 +53,8 @@ public class Tpv {
         this.direccion = direccion;
     }
 
+    public static void encenderTpv(){
+        Funciones.menuInicial();
+    }
+    
 }
