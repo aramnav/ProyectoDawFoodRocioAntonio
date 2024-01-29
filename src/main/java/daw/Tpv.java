@@ -28,6 +28,26 @@ public class Tpv {
     }
 
     public Tpv() {
+         List<Producto> carta = Funciones.crearCarta();
+        Funciones.menuInicial(carta);
+
+        //poner colores 
+        JButton boton = new JButton("Aceptar");
+        UIManager.put("OptionPane.background", Color.decode("#ef7bba"));
+        UIManager.getLookAndFeelDefaults().put("Panel.background", Color.decode("#ef7bba"));
+        boton.setBackground(Color.decode("#b976cd"));
+        boton.setForeground(Color.WHITE);
+        boton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JOptionPane.getRootFrame().dispose();
+            }
+        });
+        JButton[] botones = {boton};
+        JOptionPane.showOptionDialog(null, "Bye bye", "¡Hasta la próxima!",
+                JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                null, botones, botones[0]);
+    }
     }
 
     public void encenderTpv() {
