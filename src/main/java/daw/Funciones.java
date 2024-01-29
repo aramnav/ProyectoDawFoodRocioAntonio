@@ -385,9 +385,10 @@ public class Funciones {
                         break;
                     }
                     anadirCarrito(carrito, p1);
-                    JOptionPane.showMessageDialog(null, "Producto añadido correctamente");
                     cantidad = obtenerCantidadProducto(p1);
                     cantidades.add(cantidad);
+                    JOptionPane.showMessageDialog(null, "Producto añadido correctamente");
+
 
                 }
                 case 3 -> {
