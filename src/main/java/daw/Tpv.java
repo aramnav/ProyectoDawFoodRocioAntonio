@@ -4,10 +4,16 @@
  */
 package daw;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  *
@@ -27,7 +33,7 @@ public class Tpv {
         this.hora = LocalTime.now();
     }
 
-    public Tpv() {
+    public void encenderTpv() {
          List<Producto> carta = Funciones.crearCarta();
         Funciones.menuInicial(carta);
 

@@ -11,7 +11,7 @@ package daw;
 public class Main {
 
     public static void main(String[] args) {
-        Tpv t1 = new Tpv();
+        Tpv t1 = new Tpv("Sevilla");
 
         t1.encenderTpv();
          

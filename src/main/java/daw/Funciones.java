@@ -388,8 +388,6 @@ public class Funciones {
                     cantidad = obtenerCantidadProducto(p1);
                     cantidades.add(cantidad);
                     JOptionPane.showMessageDialog(null, "Producto añadido correctamente");
-
-
                 }
                 case 3 -> {
                     verCarrito(carrito, cantidades, tickets);
@@ -455,40 +453,6 @@ public class Funciones {
             }
             case 4 -> {
                 p1 = null;
-            }
-        }
-        return p1;
-    }
-    
-     public static Producto menuSubcategoriaBebida(List<Producto> carta) {
-        String[] eleccionUsuario = {"Alcoholica", "Refrescos", "Zumos","Agua"," Volver atrás"};
-        int subcategoria = 0;
-        Producto p1 = new Producto();
-
-        subcategoria = JOptionPane.showOptionDialog(null, "Elige una opción",
-                "Eleccion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, eleccionUsuario, eleccionUsuario[0]);
-
-        switch (subcategoria) {
-            case 0 -> {
-                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.ALCOHOLICA));
-                return p1;
-            }
-            case 1 -> {
-                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.REFRESCO));
-                return p1;
-            }
-            case 2 -> {
-                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.ZUMO));
-                return p1;
-            }
-             case 3 -> {
-                p1 = mostrarMenuDesplegablePrecio(crearLista(carta, Categoria.BEBIDA, Subcategoria.AGUA));
-                return p1;
-             }
-            case 4 -> {
-                p1 = null;
-
-                break;
             }
         }
         return p1;
@@ -586,7 +550,7 @@ public class Funciones {
 
     public static void consultarVentasHoy(List<Ticket> tickets) {
         List<String> ticketsHoy = new ArrayList<>();
-                DecimalFormat dosDecimales = new DecimalFormat("#.##");
+        DecimalFormat dosDecimales = new DecimalFormat("#.##");
         String venta = "";
         for (Ticket ticket : tickets) {
             if (ticket.getFecha().equals(LocalDate.now())) {
